@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Tgs.Global.Controllers
+namespace Tgs.Global.ViewModels
 {
     public class PagingViewModel
     {

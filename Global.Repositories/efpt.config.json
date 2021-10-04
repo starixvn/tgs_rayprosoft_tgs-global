@@ -5,7 +5,7 @@
    "DefaultDacpacSchema": null,
    "FilterSchemas": true,
    "IncludeConnectionString": false,
-   "ModelNamespace": null,
+   "ModelNamespace": "Entities.Models",
    "OutputContextPath": "Entities",
    "OutputPath": "Entities\\Models",
    "ProjectRootNamespace": "Tgs.Global.Repositories",
@@ -17,6 +17,14 @@
    "SelectedHandlebarsLanguage": 0,
    "SelectedToBeGenerated": 0,
    "Tables": [
+      {
+         "Name": "dbo.bet_limits",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.brand_bet_limits",
+         "ObjectType": 0
+      },
       {
          "Name": "dbo.brands",
          "ObjectType": 0
@@ -34,9 +42,9 @@
    "UseBoolPropertiesWithoutDefaultSql": true,
    "UseDatabaseNames": false,
    "UseDbContextSplitting": true,
-   "UseFluentApiOnly": false,
+   "UseFluentApiOnly": true,
    "UseHandleBars": false,
-   "UseInflector": false,
+   "UseInflector": true,
    "UseLegacyPluralizer": false,
    "UseNoConstructor": false,
    "UseNoDefaultConstructor": false,

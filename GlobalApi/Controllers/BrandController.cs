@@ -75,12 +75,70 @@ namespace Tgs.Global.Controllers
             }
         }
 
-        //[HttpGet]
-        //[AllowAnonymous]
-        //[Route("players/mocksite")]
-        //public async ValueTask<PagedResponse<BrandPlayersResult>> GetBrandPlayersForMockSiteAsync(
-        //    [FromQuery] GetBrandPlayersRequest request)
-        //    => await _mediator.Send(request).ConfigureAwait(false);
+        [HttpGet]
+        [AllowAnonymous]
+        [Route("players/mocksite")]
+        public async ValueTask<PagingResponseViewModel<BrandPlayerViewModel>> GetBrandPlayersForMockSiteAsync(
+            [FromServices] IGetService<BrandPlayerQuery, int> countService,
+            [FromServices] IQueryService<BrandPlayerQuery, BrandPlayerInfo> queryService,
+            [FromServices] ICommandService<CreateBrandPlayerCommand> commandService,
+            [FromQuery] BrandPlayerQueryViewModel playerQuery,
+            [FromQuery] PagingViewModel paging)
+        {
+            var sourcePaging = new Paging<BrandPlayerInfo>();
+
+            if (paging.ShowAll == true)
+            {
+                // if ShowAll = true, return the first page with default row counts
+                sourcePaging.Page = 1;
+                sourcePaging.RowCount = 10;
+            }
+            else
+            {
+                sourcePaging.Page = paging.Page ?? 1;
+                sourcePaging.RowCount = paging.Rows ?? 10;
+            }
+
+            if (!string.IsNullOrWhiteSpace(paging.SortBy))
+                sourcePaging.SortByPropertyName(paging.SortBy, paging.IsDesc ?? false);
+
+            var query = new BrandPlayerQuery(
+                playerQuery.BrandCode,
+                playerQuery.CurrencyCode,
+                playerQuery.PlayerType,
+                sourcePaging);
+
+            var totalCount = await countService.GetAsync(query).ConfigureAwait(false);
+
+            if (totalCount == 0)
+            {
+                var command = new CreateBrandPlayerCommand(
+                    playerQuery.BrandCode,
+                    playerQuery.CurrencyCode,
+                    playerQuery.PlayerType);
+
+                await commandService.ExecuteAsync(command).ConfigureAwait(false);
+
+                totalCount = await countService.GetAsync(query).ConfigureAwait(false);
+            }
+
+            var items = queryService.QueryAsync(query)
+                .Select(row =>
+                    new BrandPlayerViewModel
+                    {
+                        PlayerCode = row.PlayerCode,
+                        UserName = row.UserName,
+                        Status = row.Status
+                    });
+
+            return new PagingResponseViewModel<BrandPlayerViewModel>
+            {
+                TotalCount = totalCount,
+                Page = sourcePaging.Page,
+                Rows = sourcePaging.RowCount,
+                Items = items.ToEnumerable()
+            };
+        }
 
         ///// <summary>
         /////     This api will create a new player when the player is not exist, and login with desktop
