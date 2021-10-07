@@ -22,19 +22,12 @@ namespace Tgs.Global.ApplicationServices.Setting
             var value = await _repository.QuerySettingAsync(new SettingQueryConditions("SuperLicenseeCodes"))
                 .ConfigureAwait(false);
 
-            string[] items = Array.Empty<string>();
+            if (string.IsNullOrEmpty(value))
+                yield break;
 
-            if (!string.IsNullOrEmpty(value))
-            {
-                var values = JsonSerializer.Deserialize<string[]>(value);
+            var values = JsonSerializer.Deserialize<string[]>(value);
 
-                if (values != null)
-                {
-                    items = values;
-                }
-            }
-
-            foreach (var item in items)
+            foreach (var item in values ?? Array.Empty<string>())
                 yield return item;
         }
     }
