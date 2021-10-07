@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using TGS.ServiceUtility;
 
 namespace Tgs.Global.ApplicationServices.Brands
 {
     internal class BrandApiKeyQueryService :
-        IQueryService<BrandApiKeyQuery, BrandApiKeyInfo>,
-        IGetService<BrandApiKeyQuery, int>
+        IQueryService<BrandApiKeyQuery, BrandApiKeyInfo>
     {
         private readonly ITgsRepository _repository;
 
@@ -17,13 +16,20 @@ namespace Tgs.Global.ApplicationServices.Brands
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public ValueTask<int> GetAsync(BrandApiKeyQuery query, CancellationToken cancellationToken = default)
-            => _repository.CountBrandApiKeysAsync();
-
         public IAsyncEnumerable<BrandApiKeyInfo> QueryAsync(
             BrandApiKeyQuery query, CancellationToken cancellationToken = default)
-            => query.Paging == null
-                ? _repository.QueryBrandApiKeysAsync()
-                : _repository.QueryBrandApiKeysAsync(query.Paging);
+        {
+            var licenseeCodes = query.LicenseeCodes.ToArray();
+            var items = _repository.QueryBrandApiKeysAsync();
+
+            if (licenseeCodes.Length == 0)
+            {
+                return items;
+            }
+
+            return items
+                .Where(info => licenseeCodes.Contains(info.LicenseeCode))
+                .Select(info => info);
+        }
     }
 }

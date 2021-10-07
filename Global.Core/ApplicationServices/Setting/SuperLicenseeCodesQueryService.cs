@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Threading;
+using TGS.ServiceUtility;
+
+namespace Tgs.Global.ApplicationServices.Setting
+{
+    public class SuperLicenseeCodesQueryService : IQueryService<SuperLicenseeCodesQuery, string>
+    {
+        private readonly ITgsRepository _repository;
+
+        public SuperLicenseeCodesQueryService(ITgsRepository repository)
+        {
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        }
+
+        public async IAsyncEnumerable<string> QueryAsync(
+            SuperLicenseeCodesQuery query, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            var value = await _repository.QuerySettingAsync(new SettingQueryConditions("SuperLicenseeCodes"))
+                .ConfigureAwait(false);
+
+            string[] items = Array.Empty<string>();
+
+            if (!string.IsNullOrEmpty(value))
+            {
+                var values = JsonSerializer.Deserialize<string[]>(value);
+
+                if (values != null)
+                {
+                    items = values;
+                }
+            }
+
+            foreach (var item in items)
+                yield return item;
+        }
+    }
+}

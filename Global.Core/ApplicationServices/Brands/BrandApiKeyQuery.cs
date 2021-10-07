@@ -1,7 +1,7 @@
-﻿using TGS.Paging;
+﻿using System.Collections.Generic;
 
 namespace Tgs.Global.ApplicationServices.Brands
 {
     public record BrandApiKeyQuery(
-        Paging<BrandApiKeyInfo>? Paging);
+        IEnumerable<string> LicenseeCodes);
 }

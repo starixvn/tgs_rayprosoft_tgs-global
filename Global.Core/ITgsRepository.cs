@@ -9,10 +9,6 @@ namespace Tgs.Global
     {
         IAsyncEnumerable<BrandApiKeyInfo> QueryBrandApiKeysAsync();
 
-        IAsyncEnumerable<BrandApiKeyInfo> QueryBrandApiKeysAsync(Paging<BrandApiKeyInfo> paging);
-
-        ValueTask<int> CountBrandApiKeysAsync();
-
         ValueTask<int> CountBrandPlayersAsync(BrandPlayerQueryConditions conditions);
 
         IAsyncEnumerable<BrandPlayerInfo> QueryBrandPlayersAsync(
@@ -21,5 +17,7 @@ namespace Tgs.Global
         ValueTask<Guid> QueryBrandIdByCodeAsync(string brandCode);
 
         ValueTask<int> QueryDefaultBetLimitIdAsync(Guid brandId, string currencyCode, bool isDefault);
+
+        ValueTask<string> QuerySettingAsync(SettingQueryConditions conditions);
     }
 }

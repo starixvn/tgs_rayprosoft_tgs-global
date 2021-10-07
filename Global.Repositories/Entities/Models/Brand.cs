@@ -43,7 +43,10 @@ namespace Tgs.Global.Repositories.Entities.Models
         public bool EnableSms { get; set; }
         public string? SmsVendorCode { get; set; }
         public string? SmsVendorSettings { get; set; }
+        public decimal PlatformCharge { get; set; }
+        public bool CheckDividendActiveCount { get; set; }
 
+        public virtual Licensee Licensee { get; set; } = default!;
         public virtual ICollection<BrandBetLimit> BrandBetLimits { get; set; }
         public virtual ICollection<Player> Players { get; set; }
     }

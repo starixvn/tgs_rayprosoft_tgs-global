@@ -18,7 +18,15 @@
    "SelectedToBeGenerated": 0,
    "Tables": [
       {
+         "Name": "dbo.settings",
+         "ObjectType": 0
+      },
+      {
          "Name": "dbo.bet_limits",
+         "ObjectType": 0
+      },
+      {
+         "Name": "dbo.licensees",
          "ObjectType": 0
       },
       {

@@ -23,7 +23,9 @@ namespace Tgs.Global.Repositories.Entities
         public virtual DbSet<BetLimit> BetLimits { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<BrandBetLimit> BrandBetLimits { get; set; }
+        public virtual DbSet<Licensee> Licensees { get; set; }
         public virtual DbSet<Player> Players { get; set; }
+        public virtual DbSet<Setting> Settings { get; set; }
         public virtual DbSet<Wallet> Wallets { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,7 +36,9 @@ namespace Tgs.Global.Repositories.Entities
             modelBuilder.ApplyConfiguration(new Configurations.BetLimitConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.BrandConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.BrandBetLimitConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.LicenseeConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.PlayerConfiguration());
+            modelBuilder.ApplyConfiguration(new Configurations.SettingConfiguration());
             modelBuilder.ApplyConfiguration(new Configurations.WalletConfiguration());
             OnModelCreatingPartial(modelBuilder);
         }

@@ -37,6 +37,8 @@ namespace Tgs.Global.Repositories.Entities.Configurations
 
             entity.Property(e => e.AutoSentPlayerBonus).HasColumnName("auto_sent_player_bonus");
 
+            entity.Property(e => e.CheckDividendActiveCount).HasColumnName("check_dividend_active_count");
+
             entity.Property(e => e.ClientId)
                 .IsRequired()
                 .HasMaxLength(128)
@@ -97,6 +99,10 @@ namespace Tgs.Global.Repositories.Entities.Configurations
                 .HasMaxLength(128)
                 .HasColumnName("operational_email");
 
+            entity.Property(e => e.PlatformCharge)
+                .HasPrecision(9, 6)
+                .HasColumnName("platform_charge");
+
             entity.Property(e => e.PreviousSettlementFrom)
                 .HasColumnType("timestamp with time zone")
                 .HasColumnName("previous_settlement_from")
@@ -136,6 +142,11 @@ namespace Tgs.Global.Repositories.Entities.Configurations
             entity.Property(e => e.UpdatedOn)
                 .HasColumnType("timestamp with time zone")
                 .HasColumnName("updated_on");
+
+            entity.HasOne(d => d.Licensee)
+                .WithMany(p => p.Brands)
+                .HasForeignKey(d => d.LicenseeId)
+                .HasConstraintName("fk_brands_licensees_licensee_id");
 
             OnConfigurePartial(entity);
         }

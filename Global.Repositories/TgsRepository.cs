@@ -18,24 +18,6 @@ namespace Tgs.Global.Repositories
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public IAsyncEnumerable<BrandApiKeyInfo> QueryBrandApiKeysAsync()
-            => _dbContext.Brands.AsQueryable()
-                .Select(b => new BrandApiKeyInfo(b.Code, b.ApiKey)).AsAsyncEnumerable();
-
-        public IAsyncEnumerable<BrandApiKeyInfo> QueryBrandApiKeysAsync(Paging<BrandApiKeyInfo> paging)
-        {
-            var dataQuery = _dbContext.Brands.AsQueryable()
-                .Select(b => new BrandApiKeyInfo(b.Code, b.ApiKey));
-
-            dataQuery = dataQuery.ApplyOrderBy(paging).ApplyPaging(paging);
-
-            return dataQuery.AsAsyncEnumerable();
-        }
-
-        public async ValueTask<int> CountBrandApiKeysAsync()
-            => await _dbContext.Brands.AsQueryable().CountAsync()
-                .ConfigureAwait(false);
-
         public IAsyncEnumerable<BrandPlayerInfo> QueryBrandPlayersAsync(
             BrandPlayerQueryConditions conditions,
             Paging<BrandPlayerInfo> paging)
@@ -58,7 +40,9 @@ namespace Tgs.Global.Repositories
 
         public async ValueTask<Guid> QueryBrandIdByCodeAsync(string brandCode)
         {
-            var brand = await _dbContext.Brands.AsQueryable().FirstOrDefaultAsync(b => b.Code == brandCode);
+            var brand = await _dbContext.Brands.AsQueryable()
+                .FirstOrDefaultAsync(b => b.Code == brandCode)
+                .ConfigureAwait(false);
 
             return brand.Id;
         }
@@ -70,10 +54,22 @@ namespace Tgs.Global.Repositories
                     .FirstOrDefaultAsync(bl =>
                         bl.BrandId == brandId &&
                         bl.BetLimit.CurrencyCode == currencyCode &&
-                        bl.IsDefault == isDefault);
+                        bl.IsDefault == isDefault).ConfigureAwait(false);
 
             return betLimit.BetLimitId;
         }
+
+        public IAsyncEnumerable<BrandApiKeyInfo> QueryBrandApiKeysAsync()
+            => _dbContext.Brands.AsQueryable()
+                .Select(b => new BrandApiKeyInfo(b.Code, b.Licensee.Code, b.ApiKey))
+                .AsAsyncEnumerable();
+
+        public async ValueTask<string> QuerySettingAsync(SettingQueryConditions conditions)
+            => await _dbContext.Settings.AsQueryable()
+                .Where(s => s.Key == conditions.Key)
+                .Select(s => s.Value)
+                .FirstOrDefaultAsync()
+                .ConfigureAwait(false);
 
         private IAsyncEnumerable<Player> MakeBrandPlayersQueryAsync(
             BrandPlayerQueryConditions conditions)
