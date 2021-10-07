@@ -7,7 +7,7 @@ using TGS.ServiceUtility;
 
 namespace Tgs.Global.ApplicationServices.Setting
 {
-    public class SuperLicenseeCodesQueryService : IQueryService<SuperLicenseeCodesQuery, string>
+    internal class SuperLicenseeCodesQueryService : IQueryService<SuperLicenseeCodesQuery, string>
     {
         private readonly ITgsRepository _repository;
 
