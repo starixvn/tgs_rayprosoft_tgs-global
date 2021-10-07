@@ -71,6 +71,47 @@ namespace Tgs.Global.Repositories
                 .FirstOrDefaultAsync()
                 .ConfigureAwait(false);
 
+        public async ValueTask CreatePlayersAsync(IEnumerable<PlayerCreateInfo> playerInfos)
+        {
+            var now = DateTime.UtcNow;
+
+            var players = playerInfos.Select(p => new Player
+            {
+                PlayerCode = p.PlayerCode,
+                Username = p.UserName,
+                Type = (short)p.Type,
+                BrandId = p.BrandId,
+                Salt = p.Salt,
+                Password = p.Password,
+                WithdrawSalt = p.WithdrawSalt,
+                WithdrawPassword = p.WithdrawPassword,
+                BetLimitId = p.BetLimitId,
+                Status = (short)PlayerStatus.Enabled,
+                DefaultWalletCurrencyCode = p.CurrencyCode,
+                DefaultWalletId = p.WalletId,
+                RegisteredOn = now,
+                LastActiveOn = now,
+                UpdatedOn = now,
+                UpdatedByUsername = p.UserName,
+                Wallets = new[]
+                {
+                    new Wallet
+                    {
+                        Id = p.WalletId,
+                        PlayerCode = p.PlayerCode,
+                        CurrencyCode = p.CurrencyCode,
+                        ExternalCurrencyCode = p.CurrencyCode,
+                        Balance = 0,
+                        CreatedOn = now,
+                        UpdatedOn = now
+                    }
+                }
+            });
+
+            await _dbContext.Players.AddRangeAsync(players).ConfigureAwait(false);
+            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+
         private IAsyncEnumerable<Player> MakeBrandPlayersQueryAsync(
             BrandPlayerQueryConditions conditions)
         {

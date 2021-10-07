@@ -47,21 +47,24 @@ namespace Tgs.Global
                         var globalApiOptions = sp.GetRequiredService<IOptions<GlobalApiOptions>>().Value;
                         options.Url = globalApiOptions.NatsUrl;
                     });
-                });
+                })
+                .AddSecurity();
 
             services.AddRouting(options => options.LowercaseUrls = true)
                 .AddControllers();
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo
-                {
-                    Title = "GlobalApi",
-                    Version = "v1"
-                });
+                c.SwaggerDoc("v1",
+                    new OpenApiInfo
+                    {
+                        Title = "GlobalApi",
+                        Version = "v1"
+                    });
 
                 var xml = "GlobalApi.xml";
                 var path = Path.Combine(AppContext.BaseDirectory, xml);
+
                 if (File.Exists(path))
                     c.IncludeXmlComments(path);
             });

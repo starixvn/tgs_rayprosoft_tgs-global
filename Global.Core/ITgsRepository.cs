@@ -19,5 +19,7 @@ namespace Tgs.Global
         ValueTask<int> QueryDefaultBetLimitIdAsync(Guid brandId, string currencyCode, bool isDefault);
 
         ValueTask<string> QuerySettingAsync(SettingQueryConditions conditions);
+
+        ValueTask CreatePlayersAsync(IEnumerable<PlayerCreateInfo> players);
     }
 }
