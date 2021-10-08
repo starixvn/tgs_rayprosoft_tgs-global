@@ -10,7 +10,7 @@ ARG BuildConfiguration=Release
 RUN --mount=type=secret,id=nuget,dst=/pat cp /pat ~/.nuget/NuGet/NuGet.Config
 RUN dotnet nuget remove source 'Microsoft Visual Studio Offline Packages' || true
 WORKDIR /src
-COPY ["nuget.config", "."]
+COPY ["NuGet.config", "."]
 COPY ["GlobalApi/GlobalApi.csproj", "GlobalApi/"]
 COPY ["Global.Core/Global.Core.csproj", "Global.Core/"]
 COPY ["Global.Repositories/Global.Repositories.csproj", "Global.Repositories/"]
