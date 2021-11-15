@@ -10,8 +10,8 @@ using Tgs.BrandCertificate.Clients;
 using Tgs.Global.ApplicationServices.Brands;
 using Tgs.Global.ApplicationServices.Setting;
 using Tgs.Global.ViewModels;
+using Tgs.ServiceUtility;
 using TGS.Paging;
-using TGS.ServiceUtility;
 
 namespace Tgs.Global.Controllers
 {
