@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Tgs.Core.Infrastructures.Security;
 using Tgs.Global.Utilities;
-using TGS.ServiceUtility;
+using Tgs.ServiceUtility;
 
 namespace Tgs.Global.ApplicationServices.Brands
 {
