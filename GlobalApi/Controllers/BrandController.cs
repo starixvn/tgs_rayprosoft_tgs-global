@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using Tgs.BrandCertificate.Clients;
 using Tgs.Global.ApplicationServices.Brands;
 using Tgs.Global.ApplicationServices.Setting;
 using Tgs.Global.ViewModels;
@@ -113,14 +114,19 @@ namespace Tgs.Global.Controllers
             };
         }
 
-        ///// <summary>
-        /////     This api will create a new player when the player is not exist, and login with desktop
-        ///// </summary>
-        //[HttpPost]
-        //[AllowAnonymous]
-        //[Route("player/createandlogin")]
-        //public async ValueTask<CreatePlayerAndLoginResponse> CreatePlayerAndLoginAsync(
-        //    CreatePlayerAndLoginRequest request)
-        //    => await _mediator.Send(request).ConfigureAwait(false);
+        [HttpGet("token/{brandCode}")]
+        public async Task<string?> MakeBrandTokenAsync(
+            [FromServices] IGetService<GetBrandIdByCodeQuery, Guid> getBrandIdService,
+            [FromServices] IBrandCertificateClient brandCertificateClient,
+            string brandCode)
+        {
+            var brandId = await getBrandIdService
+                .GetAsync(new GetBrandIdByCodeQuery(brandCode))
+                .ConfigureAwait(false);
+
+            return await brandCertificateClient
+                .MakeJsonWebTokenAsync(brandId)
+                .ConfigureAwait(false);
+        }
     }
 }
