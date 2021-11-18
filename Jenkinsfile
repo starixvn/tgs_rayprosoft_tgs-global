@@ -95,12 +95,14 @@ pipeline {
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
+                                --set autoscaling.enabled=${autoscaling} \
                                 --set connectionStrings.nats="$tgs_nats" 
                         '''
                         sh '''
                             helm template deployment/k8s/global-api \
                                 --set image.tag=${TAG} \
                                 --set namespace=${kube_ns} \
+                                --set autoscaling.enabled=${autoscaling} \
                                 --set connectionStrings.tgs="$tgs_tgs" \
                                 --set connectionStrings.nats="$tgs_nats" \
                                 | kubectl -n ${kube_ns} apply -f -
