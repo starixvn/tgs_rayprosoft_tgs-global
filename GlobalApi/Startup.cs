@@ -17,6 +17,12 @@ namespace Tgs.Global
         public void ConfigureServices(IServiceCollection services)
         {
             services
+                .AddBrandCertificateClient((options, sp) =>
+                {
+                    var config = sp.GetRequiredService<IConfiguration>();
+
+                    options.BrandCertificateBaseUrl = config.GetValue<Uri>("Global:BrandCertificateBaseUrl");
+                })
                 .AddGlobalApi((options, sp) =>
                 {
                     var config = sp.GetRequiredService<IConfiguration>();
@@ -79,15 +85,16 @@ namespace Tgs.Global
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Tgs Global Api v1"));
             }
+
+            app.UseSwaggerUI();
 
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapSwagger();
                 endpoints.MapHealthChecks("/health");
             });
         }
