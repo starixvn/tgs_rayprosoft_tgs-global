@@ -131,5 +131,20 @@ namespace GlobalApi.UnitTests
             _ = fakeRepository.Received(1)
                 .CreatePlayersAsync(Arg.Any<IEnumerable<PlayerCreateInfo>>());
         }
+
+        [Test]
+        public async Task Can_Get_Brand_Id_By_Code()
+        {
+            var fakeTgsRepository = Substitute.For<ITgsRepository>();
+
+            var sut = new GetBrandIdByCodeQueryService(fakeTgsRepository);
+
+            var query = new GetBrandIdByCodeQuery("BrandCode");
+
+            await sut.GetAsync(query);
+
+            _ = fakeTgsRepository.Received(1)
+                .QueryBrandIdByCodeAsync(Arg.Is(query.BrandCode));
+        }
     }
 }
