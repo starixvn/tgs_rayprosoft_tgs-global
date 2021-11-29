@@ -9,5 +9,8 @@ data:
       "ConnectionStrings": {
         "Tgs": "{{ .Values.connectionStrings.tgs }}",
         "Nats": "{{ .Values.connectionStrings.nats }}"
+      },
+      "Global": {
+        "BrandCertificateBaseUrl": "http://brand-cert-api"
       }
     }
