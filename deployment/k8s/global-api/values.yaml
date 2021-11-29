@@ -22,8 +22,6 @@ connectionStrings:
   tgs: Server=pgpool;Port=9999;Database=tgs;User Id=rpdev;Password=abcd1234
   nats: nats://nats-client:4222
 
-brandCertificateBaseUrl: http://brand-cert-api
-
 aspNetCoreEnvironment: Development
 
 podSecurityContext: {}

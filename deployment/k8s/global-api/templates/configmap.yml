@@ -11,6 +11,6 @@ data:
         "Nats": "{{ .Values.connectionStrings.nats }}"
       },
       "Global": {
-        "BrandCertificateBaseUrl": "{{ .Values.brandCertificateBaseUrl }}"
+        "BrandCertificateBaseUrl": "http://brand-cert-api"
       }
     }
