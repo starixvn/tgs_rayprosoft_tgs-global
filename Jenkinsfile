@@ -1,3 +1,4 @@
+@Library('global-shared-library') _
 def message = "";
 
 pipeline {
@@ -88,25 +89,38 @@ pipeline {
 
         stage('Deploy to k8s') {
             steps {
-                withKubeConfig([credentialsId: env.k8s_config]) {
-                    withCredentials([string(credentialsId: "tgs-${kube_ns}-connectionstring", variable: "tgs_tgs")]) {
-                        sh '''
-                            helm template deployment/k8s/global-api \
-                                --set image.tag=${TAG} \
-                                --set namespace=${kube_ns} \
-                                --set connectionStrings.tgs="$tgs_tgs" \
-                                --set autoscaling.enabled=${autoscaling} \
-                                --set connectionStrings.nats="$tgs_nats" 
-                        '''
-                        sh '''
-                            helm template deployment/k8s/global-api \
-                                --set image.tag=${TAG} \
-                                --set namespace=${kube_ns} \
-                                --set autoscaling.enabled=${autoscaling} \
-                                --set connectionStrings.tgs="$tgs_tgs" \
-                                --set connectionStrings.nats="$tgs_nats" \
-                                | kubectl -n ${kube_ns} apply -f -
-                        '''
+                script {
+                    withKubeConfig([credentialsId: env.k8s_config]) {
+                        def resources = getResources(env.k8s_config, env.kube_ns, "global-api")
+                        println resources
+
+                        withCredentials([string(credentialsId: "tgs-${kube_ns}-connectionstring", variable: "tgs_tgs")]) {
+                            sh """
+                                cat << EOF | yq e -P | helm template deployment/k8s/global-api \
+                                    --set image.tag=${TAG} \
+                                    --set namespace=${kube_ns} \
+                                    --set connectionStrings.tgs="$tgs_tgs" \
+                                    --set autoscaling.enabled=${tgs_autoscaling} \
+                                    --set connectionStrings.nats="$tgs_nats" \
+                                    -f -
+                                    {
+                                        "resources": $resources
+                                    }
+                            """
+                            sh """
+                                cat << EOF | yq e -P | helm template deployment/k8s/global-api \
+                                    --set image.tag=${TAG} \
+                                    --set namespace=${kube_ns} \
+                                    --set autoscaling.enabled=${tgs_autoscaling} \
+                                    --set connectionStrings.tgs="$tgs_tgs" \
+                                    --set connectionStrings.nats="$tgs_nats" \
+                                    -f - \
+                                    | kubectl -n ${kube_ns} apply -f -
+                                    {
+                                        "resources": $resources
+                                    }
+                            """
+                        }
                     }
                 }
             }
