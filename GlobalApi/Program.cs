@@ -14,7 +14,7 @@ namespace Tgs.Global
             Host.CreateDefaultBuilder(args)
                 .ConfigureAppConfiguration(builder =>
                 {
-                    builder.AddJsonFile("/config/appsettings.json", true);
+                    builder.AddJsonFile("appsettings.json", true);
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

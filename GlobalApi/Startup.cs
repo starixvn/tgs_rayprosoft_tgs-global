@@ -34,15 +34,7 @@ namespace Tgs.Global
 
                     builder.UseLazyLoadingProxies();
 
-                    builder.UseNpgsql(
-                        config.GetConnectionString("Tgs"),
-                        serverOption =>
-                        {
-                            serverOption.SetPostgresVersion(12, 5);
-                            serverOption.CommandTimeout(180);
-                            serverOption.UseTrigrams();
-                        });
-
+                    builder.UseNpgsql(config.GetConnectionString("Tgs"));
                     builder.UseSnakeCaseNamingConvention();
                 })
                 .Services
@@ -77,6 +69,7 @@ namespace Tgs.Global
 
             services
                 .AddHealthChecks();
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -87,9 +80,15 @@ namespace Tgs.Global
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(x =>
+                x.AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowAnyOrigin());
+
             app.UseSwaggerUI();
 
             app.UseRouting();
+
 
             app.UseEndpoints(endpoints =>
             {
