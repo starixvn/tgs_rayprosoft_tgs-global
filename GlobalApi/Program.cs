@@ -18,6 +18,7 @@ namespace Tgs.Global
                 })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.UseSentry();
                     webBuilder.UseStartup<Startup>();
                 })
                 .ConfigureLogging(builder =>
